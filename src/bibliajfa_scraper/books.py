@@ -53,6 +53,22 @@ BOOKS: list[Book] = [Book(i, nome, cap) for i, (nome, cap) in enumerate(_LIVROS,
 assert len(BOOKS) == 66
 assert sum(b.capitulos for b in BOOKS) == 1189
 
+# Seções temáticas: (nome, primeiro livro, último livro)
+SECTIONS: list[tuple[str, int, int]] = [
+    ("Pentateuco", 1, 5),
+    ("Livros Históricos", 6, 17),
+    ("Livros Poéticos", 18, 22),
+    ("Profetas", 23, 39),
+    ("Evangelhos e Atos", 40, 44),
+    ("Epístolas e Apocalipse", 45, 66),
+]
+
+
+def section_slug(index: int, nome: str) -> str:
+    texto = unicodedata.normalize("NFKD", nome)
+    texto = "".join(c for c in texto if not unicodedata.combining(c))
+    return f"{index:02d}-" + "-".join(texto.lower().split())
+
 
 def parse_book_range(spec: str | None) -> list[Book]:
     """Interpreta '1', '1-5' ou '1,3,40-42'. None devolve todos os livros."""

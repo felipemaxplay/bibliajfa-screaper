@@ -9,6 +9,7 @@ from pathlib import Path
 from .books import parse_book_range
 from .config import TRANSLATIONS, get_translation
 from .exporter import export_txt
+from .rag_exporter import MODOS, export_rag
 from .scraper import scrape
 
 
@@ -27,6 +28,12 @@ def build_parser() -> argparse.ArgumentParser:
     e = sub.add_parser("export", help="gera a árvore TXT a partir do JSON")
     e.add_argument("-t", "--translation", default="NAA")
     e.add_argument("-o", "--output", type=Path, help="pasta de saída (padrão: data/txt/<TRADUCAO>)")
+
+    r = sub.add_parser("export-rag", help="gera TXT otimizado para RAG (AnythingLLM, NotebookLM)")
+    r.add_argument("-t", "--translation", default="NAA")
+    r.add_argument("-m", "--mode", choices=MODOS, default="livro",
+                   help="capitulo, livro ou secao (padrão: livro)")
+    r.add_argument("-o", "--output", type=Path, help="pasta base (padrão: data/rag/<TRADUCAO>)")
 
     sub.add_parser("list", help="lista as traduções configuradas")
     return p
@@ -53,3 +60,5 @@ def main(argv: list[str] | None = None) -> None:
         scrape(cfg, parse_book_range(args.books), resume=not args.no_resume)
     elif args.cmd == "export":
         export_txt(cfg, args.output)
+    elif args.cmd == "export-rag":
+        export_rag(cfg, args.mode, args.output)
