@@ -65,6 +65,20 @@ Gera `data/txt/NAA/01-genesis/01.txt`, `02.txt`, ... com um versículo por linha
 2 A terra era sem forma e vazia...
 ```
 
+### 4. Exportar para RAG (AnythingLLM, NotebookLM, Gemini)
+
+Gera TXT com cabeçalho e referência completa em cada versículo (`Gênesis 1:1 No princípio...`), o que melhora a recuperação de trechos por ferramentas de busca semântica:
+
+```bash
+PYTHONPATH=src python -m bibliajfa_scraper export-rag -t NAA --mode livro
+```
+
+| Modo | Saída | Indicado para |
+|------|-------|---------------|
+| `capitulo` | `data/rag/NAA/capitulos/01-genesis/01.txt` (1.189 arquivos) | AnythingLLM, citações precisas |
+| `livro` | `data/rag/NAA/livros/01-genesis.txt` (66 arquivos) | AnythingLLM com menos arquivos |
+| `secao` | `data/rag/NAA/secoes/01-pentateuco.txt` (6 arquivos) | NotebookLM e Gemini, que limitam o número e o tamanho das fontes |
+
 ## Cortesia de rede
 
 - Delay aleatório entre requisições (padrão: 1 a 3 segundos).
@@ -97,6 +111,7 @@ bibliajfa-screaper/
 │   ├── parser.py       # JSON e HTML para versículos
 │   ├── scraper.py      # orquestração e JSON
 │   ├── exporter.py     # JSON para árvore TXT
+│   ├── rag_exporter.py # JSON para TXT otimizado para RAG
 │   └── cli.py          # linha de comando
 ├── scripts/inspect_site.py
 ├── requirements.txt
